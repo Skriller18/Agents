@@ -60,6 +60,9 @@ import mss
 import argparse
 
 from google import genai
+from dotenv import load_dotenv
+
+load_dotenv()
 
 if sys.version_info < (3, 11, 0):
     import taskgroup, exceptiongroup
