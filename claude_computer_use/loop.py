@@ -5,8 +5,8 @@ Agentic sampling loop that calls the Anthropic API and local implenmentation of 
 import platform
 from collections.abc import Callable
 from datetime import datetime
-from enum import StrEnum
-from typing import Any, cast
+from custom_enum import StrEnum
+from typing import Any, cast, Union
 
 from anthropic import Anthropic, AnthropicBedrock, AnthropicVertex, APIResponse
 from anthropic.types import (
@@ -22,7 +22,7 @@ from anthropic.types.beta import (
     BetaToolResultBlockParam,
 )
 
-from .tools import BashTool, ComputerTool, EditTool, ToolCollection, ToolResult
+from tools import BashTool, ComputerTool, EditTool, ToolCollection, ToolResult
 
 BETA_FLAG = "computer-use-2024-10-22"
 
@@ -71,7 +71,7 @@ async def sampling_loop(
     tool_output_callback: Callable[[ToolResult, str], None],
     api_response_callback: Callable[[APIResponse[BetaMessage]], None],
     api_key: str,
-    only_n_most_recent_images: int | None = None,
+    only_n_most_recent_images: Union[int, None] = None,
     max_tokens: int = 4096,
 ):
     """

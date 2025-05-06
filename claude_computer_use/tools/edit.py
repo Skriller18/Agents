@@ -1,6 +1,6 @@
 from collections import defaultdict
 from pathlib import Path
-from typing import Literal, get_args
+from typing import Literal, get_args, Union
 
 from anthropic.types.beta import BetaToolTextEditor20241022Param
 
@@ -43,11 +43,11 @@ class EditTool(BaseAnthropicTool):
         *,
         command: Command,
         path: str,
-        file_text: str | None = None,
-        view_range: list[int] | None = None,
-        old_str: str | None = None,
-        new_str: str | None = None,
-        insert_line: int | None = None,
+        file_text: Union[str, None] = None,
+        view_range: Union[list[int], None] = None,
+        old_str: Union[str, None] = None,
+        new_str: Union[str, None] = None,
+        insert_line: Union[int, None] = None,
         **kwargs,
     ):
         _path = Path(path)
@@ -106,7 +106,7 @@ class EditTool(BaseAnthropicTool):
                     f"The path {path} is a directory and only the `view` command can be used on directories"
                 )
 
-    async def view(self, path: Path, view_range: list[int] | None = None):
+    async def view(self, path: Path, view_range: Union[list[int], None] = None):
         """Implement the view command"""
         if path.is_dir():
             if view_range:
@@ -153,7 +153,7 @@ class EditTool(BaseAnthropicTool):
             output=self._make_output(file_content, str(path), init_line=init_line)
         )
 
-    def str_replace(self, path: Path, old_str: str, new_str: str | None):
+    def str_replace(self, path: Path, old_str: str, new_str: Union[str, None]):
         """Implement the str_replace command, which replaces old_str with new_str in the file content"""
         # Read the file content
         file_content = self.read_file(path).expandtabs()

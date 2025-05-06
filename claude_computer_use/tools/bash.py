@@ -1,6 +1,6 @@
 import asyncio
 import os
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, Union
 
 from anthropic.types.beta import BetaToolBash20241022Param
 
@@ -73,18 +73,23 @@ class _BashSession:
 
         # read output from the process, until the sentinel is found
         try:
-            async with asyncio.timeout(self._timeout):
-                while True:
-                    await asyncio.sleep(self._output_delay)
-                    # if we read directly from stdout/stderr, it will wait forever for
-                    # EOF. use the StreamReader buffer directly instead.
-                    output = (
-                        self._process.stdout._buffer.decode()  # pyright: ignore[reportAttributeAccessIssue]
-                    )
-                    if self._sentinel in output:
-                        # strip the sentinel and break
-                        output = output[: output.index(self._sentinel)]
-                        break
+            # Using asyncio.wait_for instead of asyncio.timeout for Python 3.9 compatibility
+            start_time = asyncio.get_event_loop().time()
+            while True:
+                await asyncio.sleep(self._output_delay)
+                # Check if we've exceeded the timeout
+                if asyncio.get_event_loop().time() - start_time > self._timeout:
+                    raise asyncio.TimeoutError()
+                    
+                # if we read directly from stdout/stderr, it will wait forever for
+                # EOF. use the StreamReader buffer directly instead.
+                output = (
+                    self._process.stdout._buffer.decode()  # pyright: ignore[reportAttributeAccessIssue]
+                )
+                if self._sentinel in output:
+                    # strip the sentinel and break
+                    output = output[: output.index(self._sentinel)]
+                    break
         except asyncio.TimeoutError:
             self._timed_out = True
             raise ToolError(
@@ -113,7 +118,7 @@ class BashTool(BaseAnthropicTool):
     The tool parameters are defined by Anthropic and are not editable.
     """
 
-    _session: _BashSession | None
+    _session: Union[_BashSession, None]
     name: ClassVar[Literal["bash"]] = "bash"
     api_type: ClassVar[Literal["bash_20241022"]] = "bash_20241022"
 
@@ -122,7 +127,7 @@ class BashTool(BaseAnthropicTool):
         super().__init__()
 
     async def __call__(
-        self, command: str | None = None, restart: bool = False, **kwargs
+        self, command: Union[str, None] = None, restart: bool = False, **kwargs
     ):
         print("### Running bash command:", command)
         if restart:

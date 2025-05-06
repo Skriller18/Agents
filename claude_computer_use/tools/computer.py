@@ -1,12 +1,12 @@
 import asyncio
 import base64
 import io
-from enum import StrEnum
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, Union
 import pyautogui
 from anthropic.types.beta import BetaToolComputerUse20241022Param
 
 from .base import BaseAnthropicTool, ToolError, ToolResult
+from custom_enum import StrEnum
 
 OUTPUT_DIR = "/tmp/outputs"
 
@@ -35,7 +35,7 @@ class ScalingSource(StrEnum):
 class ComputerToolOptions(TypedDict):
     display_height_px: int
     display_width_px: int
-    display_number: int | None
+    display_number: Union[int, None]
 
 
 def chunks(s: str, chunk_size: int) -> list[str]:
@@ -52,7 +52,7 @@ class ComputerTool(BaseAnthropicTool):
     api_type: Literal["computer_20241022"] = "computer_20241022"
     width: int
     height: int
-    display_num: int | None
+    display_num: Union[int, None]
 
     _screenshot_delay = 1.0
     _scaling_enabled = True
@@ -90,12 +90,14 @@ class ComputerTool(BaseAnthropicTool):
         self,
         *,
         action: Action,
-        text: str | None = None,
-        coordinate: list[int] | None = None,
+        text: Union[str, None] = None,
+        coordinate: Union[list[int], None] = None,
         **kwargs,
     ):
         print(
-            f"### Performing action: {action}{f", text: {text}" if text else ''}{f", coordinate: {coordinate}" if coordinate else ''}"
+            f"### Performing action: {action}" + 
+            (f", text: {text}" if text else '') + 
+            (f", coordinate: {coordinate}" if coordinate else '')
         )
         if action in ("mouse_move", "left_click_drag"):
             if coordinate is None:
