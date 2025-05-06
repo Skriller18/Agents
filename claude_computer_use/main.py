@@ -8,6 +8,9 @@ from loop import sampling_loop, APIProvider
 from tools import ToolResult
 from anthropic.types.beta import BetaMessage, BetaMessageParam
 from anthropic import APIResponse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 async def main():
