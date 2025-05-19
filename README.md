@@ -1,28 +1,32 @@
-# Multimodal Live API Console
+# AI Agents Playground
 
-A comprehensive application that enables integration with Google's Multimodal Live API and Gemini models, providing real-time audio/video streaming, interactive AI conversations, visualization capabilities, and AI agent features.
+A collaborative repository focused on building and experimenting with AI agents. This project integrates with Google's Multimodal Live API and Gemini models, Anthropic's Claude, and LiveKit to create interactive AI agents with real-time audio/video streaming capabilities, computer control features, and multimodal interactions.
 
-![Multimodal Live API Console]
+![Multimodal Live API Console](https://via.placeholder.com/800x400)
 
 ## 🌟 Features
 
-- **Real-time streaming communication** with Gemini models
+- **Real-time streaming communication** with Gemini and Claude models
 - **Audio and video input/output** for multimodal conversations
 - **Screen sharing and webcam capture** for visual context
+- **Computer control capabilities** allowing agents to interact with your desktop
 - **Dynamic visualization** using Altair/Vega charts
 - **Tool-based interaction** with Google Search integration
 - **Intelligent math tutoring** features
 - **Interactive console UI** for tracking conversations and tools usage
-- **AI agents** that can interact with your computer screen
 
-## 📦 Components
+Feel free to extend these capabilities or create entirely new agent types!
 
-This repository includes:
+## 🔍 Agent Capabilities
 
-1. **Web Console Application** - React-based frontend interface
-2. **Gemini Live API Integration** - Python scripts for audio/video streaming with Gemini
-3. **Claude Computer Use** - Tools for Claude AI to interact with your computer
-4. **LiveKit Agent Integration** - Video conferencing with AI agents
+This repository contains implementations of several AI agent types:
+
+1. **Multimodal Web Agents** - React-based agents that can process and respond with text, audio, and visuals
+2. **Computer-Controlling Agents** - Claude-powered agents that can interact with your desktop
+3. **Educational Math Tutoring Agents** - Agents that can analyze and provide feedback on written math work
+4. **Video Conference Agents** - LiveKit-integrated agents for real-time video interaction
+
+Each agent type demonstrates different capabilities and integration approaches, providing a valuable resource for anyone interested in building their own AI agents.
 
 ## 📋 Prerequisites
 
@@ -87,17 +91,23 @@ This repository includes:
    python livekit-openai-agent.py
    ```
 
-## 🔧 Usage
+## 🔧 Usage Examples
 
-### Web Console
+### Web Console Agent
 
-1. Click the "Play" button to connect to the Gemini API
-2. Use the microphone button to enable/disable audio input
-3. Use the screen sharing or webcam buttons to enable visual context
-4. Type messages in the input box or use your microphone to converse with the AI
-5. View conversation history and tool usage in the sidebar
+```bash
+# Start the web application
+npm start
 
-### Gemini Live Python Script
+# In your browser at http://localhost:3000
+# 1. Click the "Play" button to connect to the Gemini API
+# 2. Use the microphone button to enable/disable audio input
+# 3. Use the screen sharing or webcam buttons to enable visual context
+# 4. Type messages or use your microphone to converse with the AI
+# 5. View conversation history and tool usage in the sidebar
+```
+
+### Gemini Live Agent
 
 ```bash
 # For camera mode (default)
@@ -110,60 +120,80 @@ python gemini-live.py --mode screen
 python gemini-live.py --mode none
 ```
 
-### Claude Computer Use
+### Claude Computer-Controlling Agent
 
 ```bash
-python claude_computer_use/main.py "Save an image of a cat to the desktop"
+# Give Claude instructions to perform on your computer
+python claude_computer_use/main.py "Search for the latest AI news and take a screenshot"
+
+# Try more complex instructions
+python claude_computer_use/main.py "Create a new folder on the desktop named 'AI Projects'"
 ```
 
-## 📊 Visualization Features
+### LiveKit Video Agent
 
-The application includes integration with Altair/Vega for creating visualizations:
+```bash
+# Start the math tutor video agent
+python livekit-openai-agent.py
 
-1. Ask the AI to create a chart or graph
-2. The AI will use the `render_altair` function to generate the visualization
-3. Results will be displayed in the main application area
+# Connect to a LiveKit room to interact with the agent via video
+```
 
-## 👩‍🏫 Math Tutoring Features
+Feel free to experiment with different instructions and capabilities!
 
-Use the math tutoring capabilities:
+## 🔬 Future Agent Explorations
 
-1. Share your screen showing math problems or equations
-2. The AI will use the `check_work` function to analyze your work
-3. Get step-by-step feedback on your solutions
+Here are some exciting directions to explore with this codebase:
 
-## 🔍 Tool Integration
+- **Cross-model agent collaboration**: Create systems where Gemini and Claude agents collaborate
+- **Specialized domain agents**: Build agents optimized for specific domains (healthcare, education, etc.)
+- **Agent memory systems**: Implement better memory and context management for longer interactions
+- **Multimodal reasoning**: Enhance agents' ability to reason across text, images, audio, and actions
+- **Agent autonomy levels**: Experiment with different autonomy/supervision balances
+- **Multi-agent systems**: Create environments where multiple agents interact with each other
+- **Agent personalization**: Build systems that adapt to individual user preferences and needs
 
-The application integrates with Google Search and other tools:
+If you implement any of these ideas, please contribute back to the repository!
 
-1. Ask questions that require up-to-date information
-2. View search results within the conversation
-3. Use specialized functions for specific tasks like checking mathematical work
+## 🧠 Agent Architecture
 
-## 🚢 Deployment
+Each agent in this repository follows a similar architecture pattern:
 
-To deploy the application to Google App Engine:
+1. **Input Processing** - Capturing and processing user inputs (text, audio, video)
+2. **AI Model Integration** - Connecting to AI models (Gemini, Claude) via their respective APIs
+3. **Tool Integration** - Enabling the AI to use tools (search, visualization, computer control)
+4. **Output Generation** - Producing multimodal responses (text, speech, visual elements)
+5. **Feedback Loop** - Maintaining context and enabling iterative interactions
 
+These components can be mixed and matched to create new types of agents with different capabilities.
+
+Feel free to experiment with the architecture and create your own agent variants!
+
+## 🚢 Deployment Options
+
+The repository components can be deployed in various ways:
+
+### Web Console
+Deploy to Google App Engine:
 ```bash
 gcloud app deploy app.yaml
 ```
 
-## 🧰 Project Structure
+### Agent Services
+For production deployments, consider:
+- Containerizing agents with Docker
+- Deploying to cloud services (GCP, AWS, Azure)
+- Setting up CI/CD pipelines for automated deployment
 
-- `/src` - React application source code
-- `/public` - Static assets
-- `/src/components` - React components
-- `/src/contexts` - React contexts including LiveAPIContext
-- `/src/hooks` - Custom React hooks
-- `/src/lib` - Utility functions and classes
-- `/claude_computer_use` - Claude AI computer interaction tools
-- Python scripts in the root directory for various AI agent capabilities
+Feel free to contribute deployment templates and examples!
 
 ## 🔒 Security Notes
 
 - API keys should never be committed to version control
 - Use environment variables for sensitive configuration
 - Ensure proper authentication for any deployed instances
+- Be mindful of permissions when using computer-controlling agents
+- Review any code generated or modified by agents before execution
 
 ## 📄 License
 
@@ -171,10 +201,28 @@ This project is licensed under the Apache License 2.0 - see the LICENSE file for
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+This repository is open for community contributions! Feel free to:
+
+- **Explore the code**: Understand how different AI agent systems work
+- **Report issues**: Open an issue if you find bugs or have feature suggestions
+- **Submit pull requests**: Fix bugs or add new agent capabilities
+- **Share your experiments**: Create examples of agent use cases
+- **Improve documentation**: Help make the codebase more accessible to others
+
+All contributions, big or small, are welcome. Together we can build better AI agent systems!
+
+### How to Submit a Pull Request
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-agent`)
+3. Commit your changes (`git commit -m 'Add some amazing agent feature'`)
+4. Push to the branch (`git push origin feature/amazing-agent`)
+5. Open a Pull Request
 
 ## 📚 Additional Resources
 
 - [Google Generative AI Documentation](https://ai.google.dev/docs)
 - [Anthropic Claude Documentation](https://docs.anthropic.com/)
 - [LiveKit Documentation](https://docs.livekit.io/)
+- [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
+- [WebRTC Documentation](https://webrtc.org/getting-started/overview)
