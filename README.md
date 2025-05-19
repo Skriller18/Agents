@@ -2,8 +2,6 @@
 
 A collaborative repository focused on building and experimenting with AI agents. This project integrates with Google's Multimodal Live API and Gemini models, Anthropic's Claude, and LiveKit to create interactive AI agents with real-time audio/video streaming capabilities, computer control features, and multimodal interactions.
 
-![Multimodal Live API Console](https://via.placeholder.com/800x400)
-
 ## 🌟 Features
 
 - **Real-time streaming communication** with Gemini and Claude models
