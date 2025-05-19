@@ -1,126 +1,180 @@
-# Live API - Web Console
+# Multimodal Live API Console
 
-This repository contains a react-based starter app for using the [Live API](<[https://ai.google.dev/gemini-api](https://ai.google.dev/api/multimodal-live)>) over a websocket. It provides modules for streaming audio playback, recording user media such as from a microphone, webcam or screen capture as well as a unified log view to aid in development of your application.
+A comprehensive application that enables integration with Google's Multimodal Live API and Gemini models, providing real-time audio/video streaming, interactive AI conversations, visualization capabilities, and AI agent features.
 
-[![Live API Demo](readme/thumbnail.png)](https://www.youtube.com/watch?v=J_q7JY1XxFE)
+![Multimodal Live API Console]
 
-Watch the demo of the Live API [here](https://www.youtube.com/watch?v=J_q7JY1XxFE).
+## 🌟 Features
 
-## Usage
+- **Real-time streaming communication** with Gemini models
+- **Audio and video input/output** for multimodal conversations
+- **Screen sharing and webcam capture** for visual context
+- **Dynamic visualization** using Altair/Vega charts
+- **Tool-based interaction** with Google Search integration
+- **Intelligent math tutoring** features
+- **Interactive console UI** for tracking conversations and tools usage
+- **AI agents** that can interact with your computer screen
 
-To get started, [create a free Gemini API key](https://aistudio.google.com/apikey) and add it to the `.env` file. Then:
+## 📦 Components
 
+This repository includes:
+
+1. **Web Console Application** - React-based frontend interface
+2. **Gemini Live API Integration** - Python scripts for audio/video streaming with Gemini
+3. **Claude Computer Use** - Tools for Claude AI to interact with your computer
+4. **LiveKit Agent Integration** - Video conferencing with AI agents
+
+## 📋 Prerequisites
+
+- Node.js v16+ and npm
+- Python 3.9+
+- Google Cloud API key with Gemini API access
+- LiveKit credentials (for LiveKit agent features)
+- Anthropic API key (for Claude computer use features)
+
+## 🚀 Getting Started
+
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd multimodal-live-api-web-console
+   ```
+
+2. **Set up the web application**:
+   ```bash
+   npm install
+   ```
+
+3. **Install Python dependencies** (for Gemini and LiveKit scripts):
+   ```bash
+   pip install -r requirements.txt
+   pip install -r claude_computer_use/requirements.txt
+   ```
+
+4. **Configure environment variables**:
+   
+   Create a `.env` file in the root directory:
+   ```
+   REACT_APP_GEMINI_API_KEY=your_gemini_api_key
+   NEXT_PUBLIC_LIVEKIT_URL=your_livekit_url
+   LIVEKIT_API_KEY=your_livekit_api_key
+   LIVEKIT_API_SECRET=your_livekit_api_secret
+   ANTHROPIC_API_KEY=your_anthropic_api_key
+   ```
+
+### Running the Application
+
+1. **Start the web console**:
+   ```bash
+   npm start
+   ```
+   The application will be available at http://localhost:3000
+
+2. **Run Gemini live API scripts** (in a separate terminal):
+   ```bash
+   python gemini-live.py
+   ```
+
+3. **Run Claude computer use** (in a separate terminal, if needed):
+   ```bash
+   python claude_computer_use/main.py "Your instruction here"
+   ```
+
+4. **Run LiveKit video agent** (in a separate terminal, if needed):
+   ```bash
+   python livekit-openai-agent.py
+   ```
+
+## 🔧 Usage
+
+### Web Console
+
+1. Click the "Play" button to connect to the Gemini API
+2. Use the microphone button to enable/disable audio input
+3. Use the screen sharing or webcam buttons to enable visual context
+4. Type messages in the input box or use your microphone to converse with the AI
+5. View conversation history and tool usage in the sidebar
+
+### Gemini Live Python Script
+
+```bash
+# For camera mode (default)
+python gemini-live.py
+
+# For screen sharing mode
+python gemini-live.py --mode screen
+
+# Without video
+python gemini-live.py --mode none
 ```
-$ npm install && npm start
+
+### Claude Computer Use
+
+```bash
+python claude_computer_use/main.py "Save an image of a cat to the desktop"
 ```
 
-We have provided several example applications on other branches of this repository:
+## 📊 Visualization Features
 
-- [demos/GenExplainer](https://github.com/google-gemini/multimodal-live-api-web-console/tree/demos/genexplainer)
-- [demos/GenWeather](https://github.com/google-gemini/multimodal-live-api-web-console/tree/demos/genweather)
-- [demos/GenList](https://github.com/google-gemini/multimodal-live-api-web-console/tree/demos/genlist)
+The application includes integration with Altair/Vega for creating visualizations:
 
-## Example
+1. Ask the AI to create a chart or graph
+2. The AI will use the `render_altair` function to generate the visualization
+3. Results will be displayed in the main application area
 
-Below is an example of an entire application that will use Google Search grounding and then render graphs using [vega-embed](https://github.com/vega/vega-embed):
+## 👩‍🏫 Math Tutoring Features
 
-```typescript
-import { type FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { useEffect, useRef, useState, memo } from "react";
-import vegaEmbed from "vega-embed";
-import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
+Use the math tutoring capabilities:
 
-export const declaration: FunctionDeclaration = {
-  name: "render_altair",
-  description: "Displays an altair graph in json format.",
-  parameters: {
-    type: SchemaType.OBJECT,
-    properties: {
-      json_graph: {
-        type: SchemaType.STRING,
-        description:
-          "JSON STRING representation of the graph to render. Must be a string, not a json object",
-      },
-    },
-    required: ["json_graph"],
-  },
-};
+1. Share your screen showing math problems or equations
+2. The AI will use the `check_work` function to analyze your work
+3. Get step-by-step feedback on your solutions
 
-export function Altair() {
-  const [jsonString, setJSONString] = useState<string>("");
-  const { client, setConfig } = useLiveAPIContext();
+## 🔍 Tool Integration
 
-  useEffect(() => {
-    setConfig({
-      model: "models/gemini-2.0-flash-exp",
-      systemInstruction: {
-        parts: [
-          {
-            text: 'You are my helpful assistant. Any time I ask you for a graph call the "render_altair" function I have provided you. Dont ask for additional information just make your best judgement.',
-          },
-        ],
-      },
-      tools: [{ googleSearch: {} }, { functionDeclarations: [declaration] }],
-    });
-  }, [setConfig]);
+The application integrates with Google Search and other tools:
 
-  useEffect(() => {
-    const onToolCall = (toolCall: ToolCall) => {
-      console.log(`got toolcall`, toolCall);
-      const fc = toolCall.functionCalls.find(
-        (fc) => fc.name === declaration.name
-      );
-      if (fc) {
-        const str = (fc.args as any).json_graph;
-        setJSONString(str);
-      }
-    };
-    client.on("toolcall", onToolCall);
-    return () => {
-      client.off("toolcall", onToolCall);
-    };
-  }, [client]);
+1. Ask questions that require up-to-date information
+2. View search results within the conversation
+3. Use specialized functions for specific tasks like checking mathematical work
 
-  const embedRef = useRef<HTMLDivElement>(null);
+## 🚢 Deployment
 
-  useEffect(() => {
-    if (embedRef.current && jsonString) {
-      vegaEmbed(embedRef.current, JSON.parse(jsonString));
-    }
-  }, [embedRef, jsonString]);
-  return <div className="vega-embed" ref={embedRef} />;
-}
+To deploy the application to Google App Engine:
+
+```bash
+gcloud app deploy app.yaml
 ```
 
-## development
+## 🧰 Project Structure
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-Project consists of:
+- `/src` - React application source code
+- `/public` - Static assets
+- `/src/components` - React components
+- `/src/contexts` - React contexts including LiveAPIContext
+- `/src/hooks` - Custom React hooks
+- `/src/lib` - Utility functions and classes
+- `/claude_computer_use` - Claude AI computer interaction tools
+- Python scripts in the root directory for various AI agent capabilities
 
-- an Event-emitting websocket-client to ease communication between the websocket and the front-end
-- communication layer for processing audio in and out
-- a boilerplate view for starting to build your apps and view logs
+## 🔒 Security Notes
 
-## Available Scripts
+- API keys should never be committed to version control
+- Use environment variables for sensitive configuration
+- Ensure proper authentication for any deployed instances
 
-In the project directory, you can run:
+## 📄 License
 
-### `npm start`
+This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🤝 Contributing
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### `npm run build`
+## 📚 Additional Resources
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-_This is an experiment showcasing the Live API, not an official Google product. We’ll do our best to support and maintain this experiment but your mileage may vary. We encourage open sourcing projects as a way of learning from each other. Please respect our and other creators' rights, including copyright and trademark rights when present, when sharing these works and creating derivative work. If you want more info on Google's policy, you can find that [here](https://developers.google.com/terms/site-policies)._
+- [Google Generative AI Documentation](https://ai.google.dev/docs)
+- [Anthropic Claude Documentation](https://docs.anthropic.com/)
+- [LiveKit Documentation](https://docs.livekit.io/)
